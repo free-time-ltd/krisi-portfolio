@@ -6,18 +6,13 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
+    provider     = "mysql"
     // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
     // Further reading:
     // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
     // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    url      = env("DATABASE_URL")
-}
-
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    url          = env("DATABASE_URL")
+    relationMode = "prisma"
 }
 
 // Necessary for Next auth
@@ -27,16 +22,17 @@ model Account {
     type              String
     provider          String
     providerAccountId String
-    refresh_token     String? // @db.Text
-    access_token      String? // @db.Text
+    refresh_token     String? @db.Text
+    access_token      String? @db.Text
     expires_at        Int?
     token_type        String?
     scope             String?
-    id_token          String? // @db.Text
+    id_token          String? @db.Text
     session_state     String?
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([provider, providerAccountId])
+    @@index([userId])
 }
 
 model Session {
@@ -45,16 +41,20 @@ model Session {
     userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String     @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?    @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
+    Image         Image[]
+    ImageTag      ImageTag[]
 }
 
 model VerificationToken {
@@ -63,4 +63,83 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+// Necessary for the gallery plugin
+model Category {
+    id            Int             @id @default(autoincrement())
+    name          String?
+    slug          String
+    createdAt     DateTime        @default(now())
+    updatedAt     DateTime        @default(now())
+    ImageCategory ImageCategory[]
+}
+
+model Image {
+    id           BigInt   @id @default(autoincrement())
+    userId       String?
+    name         String?
+    description  String?  @db.Text
+    mature       Boolean  @default(false)
+    isVisible    Boolean  @default(true)
+    position     String?
+    origin       String   @default("local")
+    dimensions   String?
+    filename     String?
+    extension    String?
+    sortOrder    Int      @default(0)
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @default(now())
+    views        Int      @default(0)
+    hasPinterest Boolean  @default(false)
+
+    User           User?            @relation(fields: [userId], references: [id], onDelete: Cascade)
+    ImageCategory  ImageCategory[]
+    ImageTag       ImageTag[]
+    ImageThumbnail ImageThumbnail[]
+
+    @@index([userId])
+}
+
+model ImageCategory {
+    id         String   @id @default(cuid())
+    imageId    BigInt
+    categoryId Int
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @default(now())
+
+    Image    Image    @relation(fields: [imageId], references: [id], onDelete: Cascade)
+    Category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+    @@index([imageId, categoryId])
+}
+
+model ImageTag {
+    id        Int      @id @default(autoincrement())
+    userId    String?
+    imageId   BigInt?
+    tag       String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now())
+
+    User  User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
+    Image Image? @relation(fields: [imageId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
+    @@index([imageId])
+}
+
+model ImageThumbnail {
+    id         String   @id @default(cuid())
+    imageId    BigInt
+    filepath   String   @db.Text
+    dimensions String
+    sortOrder  Int      @default(0)
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @default(now())
+    type       String   @default("lq")
+
+    Image Image @relation(fields: [imageId], references: [id], onDelete: Cascade)
+
+    @@index([imageId])
 }
