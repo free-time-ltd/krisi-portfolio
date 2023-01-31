@@ -2,6 +2,10 @@
   "name": "krisi-portfolio",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "build": "next build",
     "dev": "next dev",
