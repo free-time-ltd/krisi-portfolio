@@ -1,7 +1,7 @@
-import { prisma } from "../../src/server/db";
-import ImageData from "../../data/images.json";
-import ImageThumbnailData from "../../data/image_thumbnails.json";
-import ImageTagData from "../../data/image_tags.json";
+import { prisma } from "@portfolio/web/src/server/db";
+import ImageData from "@portfolio/data/images.json";
+import ImageThumbnailData from "@portfolio/data/image_thumbnails.json";
+import ImageTagData from "@portfolio/data/image_tags.json";
 import type { Image } from "@prisma/client";
 
 export default async function ImageSeeder() {

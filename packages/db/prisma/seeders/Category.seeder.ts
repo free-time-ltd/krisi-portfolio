@@ -1,5 +1,5 @@
-import { prisma } from "../../src/server/db";
-import ImageCategoryData from "../../data/image_categories.json";
+import { prisma } from "@portfolio/web/src/server/db";
+import ImageCategoryData from "@portfolio/data/image_categories.json";
 
 export default async function CategorySeeder() {
   const categories = ImageCategoryData.map(
