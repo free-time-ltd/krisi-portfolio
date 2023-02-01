@@ -13,7 +13,8 @@ To begin run the following commands
 
 ```bash
 npm install
-npx prisma db push
-npm run db-seed
+turbo db:generate
+turbo db:push
+turbo db:seed
 turbo dev
 ```
