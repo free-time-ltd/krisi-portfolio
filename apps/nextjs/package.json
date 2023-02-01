@@ -7,7 +7,8 @@
       "build": "npm run with-env next build",
       "start": "npm run with-env next start",
       "lint": "npm run with-env next lint",
-      "with-env": "dotenv -e ../../.env --"
+      "with-env": "dotenv -e ../../.env --",
+      "clean": "rimraf .next .turbo node_modules"
     },
     "dependencies": {
       "next": "latest",
