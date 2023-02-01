@@ -1,4 +1,4 @@
-import { prisma } from "@portfolio/web/src/server/db";
+import { prisma } from "@portfolio/db";
 import ImageData from "@portfolio/data/images.json";
 import ImageThumbnailData from "@portfolio/data/image_thumbnails.json";
 import ImageTagData from "@portfolio/data/image_tags.json";

@@ -1,4 +1,4 @@
-import { prisma } from "@portfolio/web/src/server/db";
+import { prisma } from "@portfolio/db";
 import ImageSeeder from "./seeders/Image.seeder";
 import CategorySeeder from "./seeders/Category.seeder";
 

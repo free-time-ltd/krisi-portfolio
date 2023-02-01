@@ -1,4 +1,4 @@
-import { prisma } from "@portfolio/web/src/server/db";
+import { prisma } from "@portfolio/db";
 import ImageCategoryData from "@portfolio/data/image_categories.json";
 
 export default async function CategorySeeder() {
