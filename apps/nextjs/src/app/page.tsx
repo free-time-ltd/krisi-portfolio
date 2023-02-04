@@ -1,7 +1,5 @@
-import type { GalleryImage } from "~/components/HeroGallery";
 import HeroGallery from "~/components/HeroGallery";
 import { prisma } from "@portfolio/db";
-import { pluck } from "~/utils/array";
 import { mapImageToDto } from "~/utils/image";
 
 const fetchData = async () => {
