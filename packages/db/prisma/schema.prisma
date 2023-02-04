@@ -84,8 +84,8 @@ model Image {
     isVisible    Boolean  @default(true)
     position     String?
     origin       String   @default("local")
-    dimensions   String?
-    filename     String?
+    dimensions   String
+    filename     String
     extension    String?
     sortOrder    Int      @default(0)
     createdAt    DateTime @default(now())
@@ -132,7 +132,7 @@ model ImageTag {
 model ImageThumbnail {
     id         String   @id @default(cuid())
     imageId    BigInt
-    filepath   String   @db.Text
+    filename   String
     dimensions String
     sortOrder  Int      @default(0)
     createdAt  DateTime @default(now())

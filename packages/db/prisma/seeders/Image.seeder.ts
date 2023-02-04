@@ -44,7 +44,7 @@ export default async function ImageSeeder() {
         create: ImageThumbnailData.filter(
           (thumb) => BigInt(thumb.image_id) === BigInt(id)
         ).map(({ filepath, dimensions, type, ...thumb }) => ({
-          filepath,
+          filename: filepath,
           dimensions,
           sortOrder: thumb.sort_order,
           type,

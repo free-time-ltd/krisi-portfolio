@@ -4,7 +4,7 @@
     "version": "1.0.0",
     "scripts": {
       "dev": "npm run with-env next dev",
-      "build": "npm run with-env next build",
+      "build": "npm run with-env next build -- --turbo",
       "start": "npm run with-env next start",
       "lint": "npm run with-env next lint",
       "with-env": "dotenv -e ../../.env --",
