@@ -14,10 +14,16 @@ body {
     background: transparent url(/background-mini.jpg) center center;
 }
 
+.font-c2ym {
+    font-family: var(--font-c2ym);
+}
+
 @layer components {
     .main-col {
         background-color: #36373C;
+        background-image: url(/pattern-overlay.jpg);
         box-shadow: 0 0 10px 16px #00000080;
+        
         @apply grid relative mx-auto max-w-[80rem] overflow-x-clip;
     }
 }

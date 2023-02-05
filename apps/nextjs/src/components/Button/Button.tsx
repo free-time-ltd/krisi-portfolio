@@ -60,7 +60,9 @@ const Button: FC<PropsWithChildren<ButtonProps>> = ({ children, ...props }) => {
           </filter>
         </defs>
       </svg>
-      <span className="relative">{children}</span>
+      <span className="font-c2ym relative text-2xl font-medium">
+        {children}
+      </span>
     </button>
   );
 };

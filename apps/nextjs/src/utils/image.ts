@@ -1,11 +1,12 @@
 import type { Image, ImageThumbnail } from "@prisma/client";
 
 export interface GalleryImage {
-  id: string | bigint;
+  id: string;
   src: string;
   width: number;
   height: number;
   name?: string;
+  description?: string;
 }
 
 type ThumbnailSize =
@@ -31,10 +32,11 @@ export const mapImageToDto = (
   const [width, height] = model.dimensions.split("x") || [];
 
   return {
-    id: model.id,
+    id: model.id.toString(),
     src: `${awsUrl}/${filename.toString()}`,
     width: Number(width ?? 0),
     height: Number(height ?? 0),
     name: model.name ?? Math.random().toString(),
+    description: model.description ?? undefined,
   };
 };

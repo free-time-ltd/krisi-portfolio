@@ -1,6 +1,7 @@
 import { prisma } from "@portfolio/db";
 import ImageSeeder from "./seeders/Image.seeder";
 import CategorySeeder from "./seeders/Category.seeder";
+import SettingSeeder from "./seeders/Settings.seeder";
 
 async function main() {
   console.warn("Seeding categories...");
@@ -14,6 +15,12 @@ async function main() {
   await ImageSeeder();
 
   console.info("Done.");
+
+  console.warn("Seeding settings...");
+
+  await SettingSeeder();
+
+  console.info("Done");
 }
 
 main()
