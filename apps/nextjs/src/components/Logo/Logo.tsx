@@ -5,11 +5,13 @@ import LogoDark from "/public/logo.png";
 
 interface Props {
   white: boolean;
+  url?: string;
   alt?: string;
+  title?: string;
 }
 
-const Logo: FC<Props> = ({ white = true, alt }) => (
-  <a href="/" title="Kristina Kostova Homepage">
+const Logo: FC<Props> = ({ url = "/", white = true, alt, title }) => (
+  <a href={url} title={title}>
     <Image
       src={white ? LogoWhite : LogoDark}
       alt={alt ?? "Kristina Kostova Logo"}

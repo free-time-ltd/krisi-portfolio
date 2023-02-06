@@ -1,7 +1,7 @@
 import { prisma } from "@portfolio/db";
 import HeroGallery from "~/components/HeroGallery";
-import type { GalleryImage } from "~/utils/image";
-import { mapImageToDto } from "~/utils/image";
+import { mapImageToDto, type GalleryImage } from "~/utils/image";
+import getSettings from "~/utils/settings";
 import Logo from "~/components/Logo";
 import Image from "next/image";
 import Button from "~/components/Button";
@@ -35,8 +35,6 @@ const fetchImages = ({
     orderBy: { sortOrder: desc ? "desc" : "asc" },
   });
 
-const fetchSettings = () => prisma.setting.findMany();
-
 const tmpGalleryComponent = (images: GalleryImage[]) =>
   images.map((image) => (
     <a
@@ -61,15 +59,13 @@ const tmpGalleryComponent = (images: GalleryImage[]) =>
   ));
 
 const IndexPage = async () => {
+  const settings = await getSettings();
   const heroImages = await fetchImages({ category: "slider", limit: 0 });
   const portfolioImages = await fetchImages({
     category: "portfolio",
     limit: 4,
   });
   const sketchImages = await fetchImages({ category: "sketches", limit: 4 });
-  const settings = await fetchSettings();
-
-  const subtitle = settings.find((setting) => setting.key === "site_slogan");
 
   const images = heroImages.map((image) => mapImageToDto(image, "16_9_thumb"));
   const portfolio = portfolioImages.map((image) =>
@@ -83,7 +79,7 @@ const IndexPage = async () => {
     <>
       <div className="mt-2 flex justify-center">
         <div className="grid grid-flow-col-dense grid-rows-1 gap-0">
-          <Logo white />
+          <Logo white alt={settings.get("logo_name")?.value} />
           <h1 className="ml-2 flex flex-col items-start justify-center text-white">
             <span className="font-c2ym text-5xl font-medium leading-8">
               Kristina
@@ -96,9 +92,9 @@ const IndexPage = async () => {
         </div>
       </div>
       <div className="header mt-1 mb-4 text-white">
-        {subtitle && (
+        {settings.has("site_slogan") && (
           <h2 className="font-c2ym text-center text-3xl font-medium">
-            {subtitle.value}
+            {settings.get("site_slogan")?.value}
           </h2>
         )}
       </div>

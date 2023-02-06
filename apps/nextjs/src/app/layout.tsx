@@ -33,7 +33,9 @@ export default function RootLayout({
       className={`${c2ymRegular.variable} ${RobotoFont.variable} ${RobotoMono.variable}`}
     >
       <body>
-        <main className="main-col">{children}</main>
+        <main className="main-col">
+          <section className="main-content">{children}</section>
+        </main>
         <footer className="relative z-10 flex flex-col text-white">
           <div className="flex flex-col justify-between bg-[#1D1D1D] px-[5vw] py-[4vh] sm:flex-row">
             <div className="sm:mw-[25vw] w-full sm:flex-1">
