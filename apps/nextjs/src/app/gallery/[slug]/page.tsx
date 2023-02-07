@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { prisma } from "@portfolio/db";
-import { mapImageToDto } from "~/utils/image";
+import { mapImageToDto } from "@portfolio/db/models/image.model";
 
 interface Props {
   params: { slug: string };

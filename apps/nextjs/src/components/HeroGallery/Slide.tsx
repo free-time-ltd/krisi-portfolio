@@ -1,6 +1,6 @@
 import Image from "next/image";
 import type { FC } from "react";
-import type { GalleryImage } from "~/utils/image";
+import type { GalleryImage } from "@portfolio/db/models/image.model";
 
 interface Props {
   image: GalleryImage;
