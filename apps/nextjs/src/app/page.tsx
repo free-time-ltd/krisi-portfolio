@@ -1,4 +1,6 @@
+import Image from "next/image";
 import {
+  GalleryImage,
   getCategoryImage,
   getImagesByCategorySlug,
   mapImageToDto,
@@ -8,7 +10,8 @@ import Logo from "~/components/Logo";
 import HeroGallery from "~/components/HeroGallery";
 import NavBar from "~/components/NavBar";
 import getSettings from "~/utils/settings";
-import { pluck } from "~/utils/array";
+import type { Category } from "@portfolio/db";
+import Button from "~/components/Button";
 
 const IndexPage = async () => {
   const heroImages = await getImagesByCategorySlug("slider");
@@ -19,7 +22,7 @@ const IndexPage = async () => {
   const navBarCategories = categories.filter((category) => category.isHeader);
   const homeCategories = categories.filter((category) => category.isHomepage);
 
-  // const categoryImages = await getCategoryImage(pluck(homeCategories, "id"));
+  const categoryList = await prepareCategoriesForHome(homeCategories);
 
   return (
     <>
@@ -46,18 +49,57 @@ const IndexPage = async () => {
       </div>
       <HeroGallery images={images} />
       <NavBar categories={navBarCategories} />
-      <div className="flex justify-center">
-        <ul>
-          {homeCategories.map((category) => (
-            <li key={category.slug}>{category.name}</li>
+      <section className="m-4 flex justify-center">
+        <ul className="flex gap-4">
+          {categoryList.map((category) => (
+            <li
+              key={category.id}
+              className="block transform-gpu border-4 border-black shadow-lg shadow-black/30 duration-75 ease-in hover:-translate-y-10"
+            >
+              <div className="block h-36 w-64 overflow-hidden">
+                <Image
+                  src={category.image.src}
+                  width={category.image.width}
+                  height={category.image.height}
+                  alt={category.image.name ?? "Category placeholder"}
+                  className="w-full"
+                />
+              </div>
+              <h1 className="text-3xl">{category.name}</h1>
+              <p>{category.image.description}</p>
+            </li>
           ))}
         </ul>
+      </section>
+      <div className="my-4 text-center">
+        <Button type="button">More art</Button>
       </div>
       <div className="spacer flex h-[2400px] items-center justify-center">
         <h2 className="text-xl">Big center</h2>
       </div>
     </>
   );
+};
+
+interface HomeCategory extends Category {
+  image: GalleryImage;
+}
+
+const prepareCategoriesForHome = async (
+  categories: Category[]
+): Promise<HomeCategory[]> => {
+  if (categories.length === 0) return [];
+
+  const map = categories.map(async (category) => {
+    const image = await getCategoryImage(category.id);
+
+    return {
+      ...category,
+      image: mapImageToDto(image, "site_thumb"),
+    } as HomeCategory;
+  });
+
+  return Promise.all(map);
 };
 
 export default IndexPage;

@@ -1,6 +1,6 @@
 import { prisma } from "../";
-import type { Prisma } from "@prisma/client";
 import type { Image, Category, ImageThumbnail } from "../";
+import type { Prisma } from "@prisma/client";
 
 export type { Image } from "@prisma/client";
 
@@ -46,12 +46,12 @@ export const getImagesByCategorySlug = (
     },
   });
 
-export const getCategoryImage = (ids: Category["id"][]) =>
-  prisma.image.findMany({
+export const getCategoryImage = (id: Category["id"]) => {
+  return prisma.image.findFirst({
     where: {
       ImageCategory: {
         some: {
-          categoryId: { in: [...ids] },
+          categoryId: id,
         },
       },
     },
@@ -62,6 +62,7 @@ export const getCategoryImage = (ids: Category["id"][]) =>
       sortOrder: "asc",
     },
   });
+};
 
 export const createImage = (props: Prisma.ImageCreateInput) => {
   return prisma.image.create({
@@ -69,9 +70,8 @@ export const createImage = (props: Prisma.ImageCreateInput) => {
   });
 };
 
-// @todo Build this url through AWS_BUCKET & AWS_REGION?
 export const awsBucketUrl =
-  "https://krisi-gallery.s3.eu-west-2.amazonaws.com" as const;
+  `https://${process.env.AWS_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com` as const;
 
 export const mapImageToDto = (
   model: Image & { ImageThumbnail: ImageThumbnail[] },

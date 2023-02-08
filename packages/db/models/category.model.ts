@@ -1,7 +1,7 @@
-import type { Category } from "@prisma/client";
 import { prisma } from "..";
+import type { Category } from "..";
 
-export type { Category } from "@prisma/client";
+export type { Category } from "..";
 
 export const getCategoryAll = () => prisma.category.findMany();
 

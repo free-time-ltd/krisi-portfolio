@@ -113,7 +113,8 @@ model ImageCategory {
     Image    Image    @relation(fields: [imageId], references: [id], onDelete: Cascade)
     Category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
-    @@index([imageId, categoryId])
+    @@index([imageId])
+    @@index([categoryId])
 }
 
 model ImageTag {

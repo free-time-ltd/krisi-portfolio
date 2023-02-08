@@ -32,7 +32,7 @@ body {
         content: '';
         background-image: url(/dots.png);
 
-        @apply absolute inset-0 pointer-events-none opacity-50 z-0 bg-contain -scale-x-100 rotate-6;
+        @apply absolute inset-0 pointer-events-none opacity-30 z-0 bg-contain -scale-x-100;
     }
 
     .main-content {
