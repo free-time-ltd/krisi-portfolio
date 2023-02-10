@@ -16,14 +16,14 @@ const HeroGallery: FC<Props> = ({ images }) => {
       <div className="flex justify-center">
         <div className="relative z-10 flex items-center justify-center">
           <Carousel
-            autoPlay={true}
-            infiniteLoop={true}
+            autoPlay
+            infiniteLoop
             showThumbs={false}
             dynamicHeight={false}
             showStatus={false}
-            showArrows={true}
-            stopOnHover={true}
-            emulateTouch={true}
+            showArrows
+            stopOnHover
+            emulateTouch
           >
             {images.map((image, index) => (
               <Slide image={image} priority={index === 0} key={image.name} />

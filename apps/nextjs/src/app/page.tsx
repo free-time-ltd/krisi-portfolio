@@ -12,6 +12,7 @@ import NavBar from "~/components/NavBar";
 import getSettings from "~/utils/settings";
 import type { Category } from "@portfolio/db";
 import Button from "~/components/Button";
+import Link from "next/link";
 
 const IndexPage = async () => {
   const heroImages = await getImagesByCategorySlug("slider");
@@ -49,30 +50,37 @@ const IndexPage = async () => {
       </div>
       <HeroGallery images={images} />
       <NavBar categories={navBarCategories} />
-      <section className="m-4 flex justify-center">
-        <ul className="flex gap-4">
+      <section className="my-12 mx-4 flex justify-center">
+        <ul className="flex gap-8">
           {categoryList.map((category) => (
             <li
               key={category.id}
-              className="block transform-gpu border-4 border-black shadow-lg shadow-black/30 duration-75 ease-in hover:-translate-y-10"
+              className="card gallery-card shadow-solid-primary w-64 flex-1 transform-gpu border-4 border-black bg-cyan-400 duration-75 ease-in hover:-translate-y-10"
             >
-              <div className="block h-36 w-64 overflow-hidden">
-                <Image
-                  src={category.image.src}
-                  width={category.image.width}
-                  height={category.image.height}
-                  alt={category.image.name ?? "Category placeholder"}
-                  className="w-full"
-                />
-              </div>
-              <h1 className="text-3xl">{category.name}</h1>
-              <p>{category.image.description}</p>
+              <Link href={`/gallery/${category.slug}`}>
+                <div className="block h-36 w-full overflow-hidden">
+                  <Image
+                    src={category.image.src}
+                    width={category.image.width}
+                    height={category.image.height}
+                    alt={category.image.name ?? "Category placeholder"}
+                    className="h-full w-full"
+                  />
+                </div>
+                <div className="card-title p-4">
+                  <h1 className="mb-2 text-3xl uppercase">{category.name}</h1>
+                  <p className="break-words">{category.image.description}</p>
+                  <p className="break-words">{category.image.description}</p>
+                </div>
+              </Link>
             </li>
           ))}
         </ul>
       </section>
-      <div className="my-4 text-center">
-        <Button type="button">More art</Button>
+      <div className="my-8 text-center">
+        <Link href={"/gallery"}>
+          <Button type="button">More art</Button>
+        </Link>
       </div>
       <div className="spacer flex h-[2400px] items-center justify-center">
         <h2 className="text-xl">Big center</h2>
@@ -95,11 +103,11 @@ const prepareCategoriesForHome = async (
 
     return {
       ...category,
-      image: mapImageToDto(image, "site_thumb"),
+      image: image ? mapImageToDto(image, "site_thumb") : undefined,
     } as HomeCategory;
   });
 
-  return Promise.all(map);
+  return (await Promise.all(map)).filter((val) => val.image);
 };
 
 export default IndexPage;

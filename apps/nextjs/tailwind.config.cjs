@@ -8,6 +8,14 @@ module.exports = {
       fontFamily: {
         sans: ['var(--font-roboto)', ...defaultTheme.fontFamily.sans],
         mono: ['var(--font-roboto-mono)', ...defaultTheme.fontFamily.mono]
+      },
+      colors: {
+        cyan: {
+          400: '#41ffd5'
+        },
+        yellow: {
+          400: '#ffda6e'
+        }
       }
     },
   },

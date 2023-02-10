@@ -39,4 +39,25 @@ body {
         position: relative;
         z-index: 10;
     }
+
+    .shadow-solid-primary {
+        box-shadow: 10px 10px #000000;
+    }
+
+    .gallery-card .card-title {
+        position: relative;
+        z-index: 10;
+    }
+
+    .gallery-card .card-title::before {
+        content: '';
+        position: absolute;
+        pointer-events: none;
+        z-index: 0;
+        top: -35px;
+        left: 0;
+        right: 0;
+        height: 35px;
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 35%, rgba(65,255,213,1) 100%);
+    }
 }

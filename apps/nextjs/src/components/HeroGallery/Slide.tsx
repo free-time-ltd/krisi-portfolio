@@ -8,13 +8,14 @@ interface Props {
 }
 
 const Slide: FC<Props> = ({ image, priority = false }) => (
-  <picture className="h-full w-full">
+  <picture className="block h-full w-full">
     <Image
       src={image.src}
       alt={image.name ?? `Slider for image`}
       width={image.width}
       height={image.height}
       priority={priority}
+      className="h-full w-full"
     />
   </picture>
 );
