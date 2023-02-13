@@ -1,26 +1,5 @@
-import localFont from "@next/font/local";
-import { Roboto, Roboto_Mono } from "@next/font/google";
-
-const c2ymRegular = localFont({
-  src: "./fonts/C2ym-Regular.woff2",
-  display: "swap",
-  variable: "--font-c2ym",
-});
-
-const RobotoFont = Roboto({
-  subsets: ["latin"],
-  display: "optional",
-  variable: "--font-roboto",
-  weight: ["300", "400", "500", "700"],
-});
-
-const RobotoMono = Roboto_Mono({
-  display: "swap",
-  subsets: ["latin"],
-  variable: "--font-roboto-mono",
-});
-
 import "../styles/globals.css";
+import FontsVariable from "./Fonts";
 
 export default function RootLayout({
   children,
@@ -28,10 +7,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      className={`${c2ymRegular.variable} ${RobotoFont.variable} ${RobotoMono.variable}`}
-    >
+    <html lang="en" className={FontsVariable}>
       <body>
         <main className="main-col">
           <section className="main-content">{children}</section>
