@@ -1,5 +1,5 @@
 import { getAllSettings } from "@portfolio/db/models/setting.model";
-import { type Setting } from "@prisma/client";
+import type { Setting } from "@portfolio/db";
 
 const settings = new Map<string, Setting>();
 

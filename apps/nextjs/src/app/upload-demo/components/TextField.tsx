@@ -1,20 +1,23 @@
 import { FC } from "react";
 
-interface Props {
-  id: string;
-  name: string;
-  label: string;
-  placeholder: string;
+interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
 }
 
-const TextField: FC<Props> = ({ id, name, label, placeholder, ...props }) => (
+const TextField: FC<Props> = ({ label, ...props }) => (
   <div className="my-2">
-    <label htmlFor={id} className="form-label mb-2 inline-block text-gray-700">
-      {label}
-    </label>
+    {label && props.id && (
+      <label
+        htmlFor={props.id}
+        className="form-label mb-2 inline-block text-white"
+      >
+        {label}
+      </label>
+    )}
     <input
       type="text"
-      className="form-control
+      {...props}
+      className={`form-control
         m-0
         block
         w-full
@@ -28,11 +31,7 @@ const TextField: FC<Props> = ({ id, name, label, placeholder, ...props }) => (
         text-gray-700
         transition
         ease-in-out
-        focus:border-blue-600 focus:bg-white focus:text-gray-700 focus:outline-none"
-      id={id}
-      name={name}
-      placeholder={placeholder}
-      {...props}
+        focus:border-blue-600 focus:bg-white focus:text-gray-700 focus:outline-none ${props.className}`}
     />
   </div>
 );
