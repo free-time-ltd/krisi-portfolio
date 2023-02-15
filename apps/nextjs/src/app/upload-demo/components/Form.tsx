@@ -47,10 +47,11 @@ const Form: FC<Props> = ({ categories }) => {
       const awsResp = await fetch(url, {
         method: "PUT",
         body: file,
-        headers: new Headers({ "Content-Type": file.type }),
-      }).then((res) => (res.status !== 200 ? Promise.reject(res) : res.json()));
+      }).then((res) => (res.status !== 200 ? Promise.reject(res) : res));
 
-      console.log({ awsResp });
+      if (awsResp.ok) {
+        e.currentTarget.reset();
+      }
     } catch (e) {
       if (e instanceof Response) {
         const error = await e.text();
@@ -114,18 +115,3 @@ const Form: FC<Props> = ({ categories }) => {
 };
 
 export default Form;
-
-const promiseFileReader = (file: Blob): Promise<string | ArrayBuffer | null> =>
-  new Promise((resolve, reject) => {
-    const fileReader = new FileReader();
-
-    fileReader.onload = (e) => {
-      resolve(e.target?.result ?? null);
-    };
-
-    fileReader.onerror = reject;
-
-    fileReader.onabort = reject;
-
-    fileReader.readAsDataURL(file);
-  });
