@@ -156,3 +156,12 @@ model Setting {
     createdAt DateTime @default(now())
     updatedAt DateTime @default(now())
 }
+
+model UploadStatus {
+    id        BigInt   @id @default(autoincrement())
+    hash      String   @unique
+    status    String // new, complete, error
+    log       String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now())
+}

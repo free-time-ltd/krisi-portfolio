@@ -1,6 +1,7 @@
 import { NextApiResponse, NextApiRequest } from "next";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { generateFilename } from "@portfolio/utils";
 
 const EXPIRE_PERIOD_SECONDS = 3600;
 
@@ -24,16 +25,17 @@ export default async function handler(
 
   const { body } = req;
 
-  const filename = `tmpuploads/test-object-${Math.ceil(
-    Math.random() * 10 ** 10
-  )}`;
+  const filename = generateFilename();
+  const extension = mimeToExtension(body.mime) ?? "";
+  const rng = Math.ceil(Math.random() * 10 ** 10);
 
   const command = new PutObjectCommand({
-    Bucket: process.env.AWS_BUCKET ?? "tmp-uploads",
-    Key: filename,
+    Bucket: process.env.AWS_UPLOAD_BUCKET ?? "tmp-uploads",
+    Key: `${filename}-${rng}.${extension}`,
     ContentType: body.mime,
-    ACL: "public-read",
     Metadata: {
+      filename,
+      extension,
       name: body.name,
       descr: body.description,
       category: body.category,
@@ -48,7 +50,7 @@ export default async function handler(
     success: true,
     data: {
       url,
-      filename,
+      hash: filename,
       contentType: body.mime,
     },
   });
@@ -56,3 +58,20 @@ export default async function handler(
 
 export const sleep = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
+
+const mimeToExtension = (mime: string) => {
+  switch (mime) {
+    case "image/jpeg":
+      return "jpeg";
+    case "image/png":
+      return "png";
+    case "image/gif":
+      return "gif";
+    case "image/svg+xml":
+      return "svg";
+    case "image/tiff":
+      return "tiff";
+    default:
+      return mime.split("/").pop();
+  }
+};

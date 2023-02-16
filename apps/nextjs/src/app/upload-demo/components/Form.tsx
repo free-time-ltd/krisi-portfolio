@@ -34,7 +34,7 @@ const Form: FC<Props> = ({ categories }) => {
       setLoading(true);
 
       const {
-        data: { url },
+        data: { url, hash },
       } = await fetch("/api/images/upload", {
         method: "POST",
         body: JSON.stringify(Object.fromEntries(formData)),
@@ -51,6 +51,7 @@ const Form: FC<Props> = ({ categories }) => {
 
       if (awsResp.ok) {
         e.currentTarget.reset();
+        pollState(hash);
       }
     } catch (e) {
       if (e instanceof Response) {
@@ -63,6 +64,24 @@ const Form: FC<Props> = ({ categories }) => {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const pollState = async (hash: string) => {
+    try {
+      const state = await fetch(`/api/images/state/${hash}`).then((res) =>
+        res.json()
+      );
+
+      if (state.data.status === "new") {
+        setTimeout(() => pollState(hash), 2500);
+      } else if (state.data.status === "complete") {
+        alert("Image upload complete");
+      } else if (state.data.status === "error") {
+        alert(`Error: ${state.data.log}`);
+      }
+    } catch (e) {
+      console.error(e);
     }
   };
 
