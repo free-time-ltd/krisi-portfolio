@@ -1,0 +1,10 @@
+service: image-service
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+functions:
+  createThumbnail:
+    handler: index.handler
