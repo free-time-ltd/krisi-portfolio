@@ -1,10 +1,17 @@
-service: image-service
-frameworkVersion: '3'
+service: image-thumb-service
+frameworkVersion: '3'	
+useDotenv: true
 
 provider:
   name: aws
   runtime: nodejs18.x
+  region: eu-west-2
 
 functions:
-  createThumbnail:
+  processCreatedObject:
     handler: index.handler
+    events:
+      - s3:
+          bucket: portfolio-uploads
+          event: s3:ObjectCreated:PUT
+          existing: true
