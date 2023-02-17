@@ -1,5 +1,5 @@
 import { NextApiResponse, NextApiRequest } from "next";
-import { prisma } from "~/server/db";
+import { findHash } from "@portfolio/db/models/uploadStatus.model";
 
 BigInt.prototype.toJSON = function () {
   return this.toString();
@@ -11,11 +11,7 @@ export default async function handler(
 ) {
   const { hash } = req.query;
 
-  const dbRes = await prisma.uploadStatus.findUnique({
-    where: {
-      hash: hash as string,
-    },
-  });
+  const dbRes = await findHash(hash as string);
 
   if (!dbRes) {
     return res

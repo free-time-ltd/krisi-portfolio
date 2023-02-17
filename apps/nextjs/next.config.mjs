@@ -19,9 +19,10 @@ const config = {
       'krisi-gallery.s3.eu-west-2.amazonaws.com',
     ]
   },
-  i18n: {
+  transpilePackages: []
+  /*i18n: {
     locales: ["en"],
     defaultLocale: "en",
-  },
+  },*/
 };
 export default config;
