@@ -7,11 +7,13 @@ provider:
   runtime: nodejs18.x
   region: eu-west-2
 
+plugins:
+  - serverless-plugin-monorepo
+
 functions:
   processCreatedObject:
     handler: index.handler
     events:
       - s3:
           bucket: portfolio-uploads
-          event: s3:ObjectCreated:PUT
-          existing: true
+          event: s3:ObjectCreated:*
