@@ -34,22 +34,27 @@ export const handler: Handler = async (event, context: Context) => {
     Key,
   });
 
-  const response = await s3Client.send(command);
+  try {
+    const response = await s3Client.send(command);
 
-  console.log({ response });
+    const filename = response?.Metadata?.filename ?? "no filename";
 
-  /*const uploadState = await createUploadStatus(filename, UploadState.NEW);
+    console.log({ filename });
 
-  createImageAtS3(filename, defaultSortOrder);
+    const awsRes = {
+      statusCode: 200,
+      body: `Hello ${event.name || "World"}`,
+    };
 
-  updateStatus(uploadState, UploadState.COMPLETE);*/
+    return awsRes;
+  } catch (e) {
+    const error = e instanceof Error ? e.message : "File probably not found";
 
-  const awsRes = {
-    statusCode: 200,
-    body: `Hello ${event.name || "World"}`,
-  };
-
-  return awsRes;
+    return {
+      statusCode: 403,
+      error,
+    };
+  }
 };
 
 const createImageAtS3 = async (arg: unknown, sortOrder: number) => {

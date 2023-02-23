@@ -6,9 +6,16 @@ provider:
   name: aws
   runtime: nodejs18.x
   region: eu-west-2
+  environment:
+    AWS_KEY: ${env:AWS_KEY}
+    AWS_SECRET: ${env:AWS_SECRET}
+    AWS_SECRET_SES: ${env:AWS_SECRET_SES}
+    AWS_BUCKET: ${env:AWS_BUCKET}
+    AWS_UPLOAD_BUCKET: ${env:AWS_UPLOAD_BUCKET}
 
 plugins:
   - serverless-plugin-monorepo
+  - serverless-dotenv-plugin
 
 resources:
   Resources:
@@ -30,7 +37,7 @@ resources:
 
 functions:
   processCreatedObject:
-    handler: index.handler
+    handler: dist/index.handler
     events:
       - s3:
           bucket: portfolio-uploads
