@@ -33,6 +33,19 @@
           "DISCORD_CLIENT_SECRET"
         ]
       },
+      "sls:deploy": {
+        "cache": false,
+        "persistent": true,
+        "env": [
+          "AWS_BUCKET",
+          "AWS_KEY",
+          "AWS_SECRET",
+          "AWS_SECRET_SES",
+          "AWS_BUCKET",
+          "AWS_UPLOAD_BUCKET",
+          "AWS_REGION"
+        ]
+      },
       "package": {
         "cache": false,
         "persistent": true,

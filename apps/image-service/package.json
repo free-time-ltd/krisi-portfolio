@@ -6,7 +6,8 @@
     "source": "src/index.ts",
     "scripts": {
         "build": "tsc",
-        "package": "npm run build && node src/packer.mjs"
+        "clean": "rimraf dist",
+        "sls:deploy": "npm run clean && npm run build && serverless deploy"
     },
     "devDependencies": {
         "@types/archiver": "^5.3.1",
@@ -23,9 +24,9 @@
         "typescript": "^4.5.3"
     },
     "dependencies": {
+        "@aws-sdk/client-s3": "^3.278.0",
         "@portfolio/db": "*",
         "@portfolio/utils": "*",
-        "aws-sdk": "^2.1309.0",
         "sharp": "^0.31.3"
     },
     "engines": {

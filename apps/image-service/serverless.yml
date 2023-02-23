@@ -10,6 +10,24 @@ provider:
 plugins:
   - serverless-plugin-monorepo
 
+resources:
+  Resources:
+    S3Assets:
+      Type: AWS::S3::Bucket
+      Properties: 
+        BucketName: portfolio-uploads
+        CorsConfiguration:
+          CorsRules:
+            - AllowedMethods:
+                - GET
+                - HEAD
+                - PUT
+                - POST
+              AllowedOrigins:
+                - "*"
+              AllowedHeaders:
+                - "*"
+
 functions:
   processCreatedObject:
     handler: index.handler
@@ -17,3 +35,4 @@ functions:
       - s3:
           bucket: portfolio-uploads
           event: s3:ObjectCreated:*
+          existing: true

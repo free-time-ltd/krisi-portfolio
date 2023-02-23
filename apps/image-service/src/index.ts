@@ -1,6 +1,6 @@
 import { Context, Handler } from "aws-lambda";
-import { S3 } from "aws-sdk";
 import { prisma } from "@portfolio/db";
+import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import {
   createUploadStatus,
   updateStatus,
@@ -16,38 +16,33 @@ const thumbSettings: ThumbnailConfMap = {
   site_thumb: { quality: 70, type: "resize", width: 270 },
 } as const;
 
-const s3 = new S3({ apiVersion: "2023-02-12", region: process.env.AWS_REGION });
+const s3Client = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_KEY ?? "",
+    secretAccessKey: process.env.AWS_SECRET_SES ?? "",
+  },
+});
 
 export const handler: Handler = async (event, context: Context) => {
-  const defaultSortOrder = await prisma.image.count();
+  // const defaultSortOrder = await prisma.image.count();
 
   const Key = event.Records[0].s3.object.key;
 
-  const response = await s3
-    .getObject({
-      Bucket: process.env.AWS_UPLOAD_BUCKET as string,
-      Key,
-    })
-    .promise();
+  const command = new GetObjectCommand({
+    Bucket: process.env.AWS_UPLOAD_BUCKET ?? "",
+    Key,
+  });
 
-  if (!response || !response.Metadata || !response.Metadata.filename) {
-    console.error(
-      "Couldn't find file or missing `filename` entry in the metadata."
-    );
+  const response = await s3Client.send(command);
 
-    return {
-      statusCode: 405,
-      error: "Couldn't find file or missing `filename` entry in the metadata",
-    };
-  }
+  console.log({ response });
 
-  const { filename } = response.Metadata;
-
-  const uploadState = await createUploadStatus(filename, UploadState.NEW);
+  /*const uploadState = await createUploadStatus(filename, UploadState.NEW);
 
   createImageAtS3(filename, defaultSortOrder);
 
-  updateStatus(uploadState, UploadState.COMPLETE);
+  updateStatus(uploadState, UploadState.COMPLETE);*/
 
   const awsRes = {
     statusCode: 200,
