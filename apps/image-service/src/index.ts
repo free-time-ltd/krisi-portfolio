@@ -1,11 +1,16 @@
+import type { Readable } from "stream";
 import { Context, Handler } from "aws-lambda";
-import { prisma } from "@portfolio/db";
-import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import {
-  createUploadStatus,
-  updateStatus,
-  UploadState,
-} from "@portfolio/db/models/uploadStatus.model";
+  S3Client,
+  GetObjectCommand,
+  GetObjectCommandOutput,
+} from "@aws-sdk/client-s3";
+// import {
+//   createUploadStatus,
+//   updateStatus,
+//   UploadState,
+// } from "@portfolio/db/models/uploadStatus.model";
+import { scaleImage, resizeImage, resizeImageAspect, getBuffer } from "./utils";
 
 const thumbSettings: ThumbnailConfMap = {
   lq: { quality: 70, type: "scale", scale: 1 },
@@ -25,8 +30,6 @@ const s3Client = new S3Client({
 });
 
 export const handler: Handler = async (event, context: Context) => {
-  // const defaultSortOrder = await prisma.image.count();
-
   const Key = event.Records[0].s3.object.key;
 
   const command = new GetObjectCommand({
@@ -37,9 +40,7 @@ export const handler: Handler = async (event, context: Context) => {
   try {
     const response = await s3Client.send(command);
 
-    const filename = response?.Metadata?.filename ?? "no filename";
-
-    console.log({ filename });
+    await createImageAtS3(response);
 
     const awsRes = {
       statusCode: 200,
@@ -57,7 +58,42 @@ export const handler: Handler = async (event, context: Context) => {
   }
 };
 
-const createImageAtS3 = async (arg: unknown, sortOrder: number) => {
-  console.log({ sortOrder });
-  return arg;
+const createImageAtS3 = async (response: GetObjectCommandOutput) => {
+  const { Body } = response;
+  const Buffer = await getBuffer(Body as Readable);
+
+  for (const key in thumbSettings) {
+    if (Object.prototype.hasOwnProperty.call(thumbSettings, key)) {
+      const opts = thumbSettings[key];
+
+      if (!opts) continue;
+
+      switch (opts.type) {
+        case "scale":
+          await scaleImage(
+            Buffer,
+            opts.scale as ScaleThumbnailConf["scale"],
+            opts.quality
+          );
+          break;
+        case "resize":
+          await resizeImage(
+            Buffer,
+            Number(opts.width) as ResizeThumbnailConf["width"],
+            "auto",
+            opts.quality
+          );
+          break;
+        case "aspect":
+          await resizeImageAspect(
+            Buffer,
+            opts.ratio as AspectThumbnailConf["ratio"],
+            opts.quality
+          );
+          break;
+        default:
+          throw new Error(`Invalid thumbnail type of: ${opts.type}`);
+      }
+    }
+  }
 };
