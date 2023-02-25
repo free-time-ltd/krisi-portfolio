@@ -135,31 +135,23 @@ const createImageAtS3 = async (response: GetObjectCommandOutput) => {
 
       if (!opts) continue;
 
-      switch (opts.type) {
-        case "scale":
-          NewImageBuffer = await scaleImage(
-            Buffer,
-            opts.scale as ScaleThumbnailConf["scale"],
-            opts.quality
-          );
-          break;
-        case "resize":
-          NewImageBuffer = await resizeImage(
-            Buffer,
-            Number(opts.width) as ResizeThumbnailConf["width"],
-            "auto",
-            opts.quality
-          );
-          break;
-        case "aspect":
-          NewImageBuffer = await resizeImageAspect(
-            Buffer,
-            opts.ratio as AspectThumbnailConf["ratio"],
-            opts.quality
-          );
-          break;
-        default:
-          throw new Error(`Invalid thumbnail type of: ${opts.type}`);
+      if ("scale" in opts) {
+        NewImageBuffer = await scaleImage(Buffer, opts.scale, opts.quality);
+      } else if ("width" in opts) {
+        NewImageBuffer = await resizeImage(
+          Buffer,
+          Number(opts.width),
+          "auto",
+          opts.quality
+        );
+      } else if ("ratio" in opts) {
+        NewImageBuffer = await resizeImageAspect(
+          Buffer,
+          opts.ratio,
+          opts.quality
+        );
+      } else {
+        throw new Error(`Invalid thumbnail type`);
       }
 
       const size = getNormalSize(await sharp(NewImageBuffer).metadata());
