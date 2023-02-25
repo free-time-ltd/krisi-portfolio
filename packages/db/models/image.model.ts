@@ -1,6 +1,5 @@
-import { prisma } from "../";
+import { prisma, Prisma } from "../";
 import type { Image, Category, ImageThumbnail } from "../";
-import type { Prisma } from "@prisma/client";
 
 export type { Image } from "@prisma/client";
 
@@ -67,6 +66,18 @@ export const getCategoryImage = (id: Category["id"]) => {
 export const createImage = (props: Prisma.ImageCreateInput) => {
   return prisma.image.create({
     data: { ...props },
+  });
+};
+
+export const createThumb = (
+  Image: Image,
+  thumb: Omit<Prisma.ImageThumbnailCreateInput, "Image">
+) => {
+  return prisma.imageThumbnail.create({
+    data: {
+      ...thumb,
+      Image: { connect: { id: Image.id } },
+    },
   });
 };
 

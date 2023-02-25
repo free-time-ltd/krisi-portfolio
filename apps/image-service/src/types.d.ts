@@ -23,3 +23,19 @@ type ThumbnailConf =
   | ResizeThumbnailConf;
 
 type ThumbnailConfMap = Record<string, ThumbnailConf>;
+
+type FileMetadata = {
+  filename: string;
+  category: string;
+  extension: string;
+  descr: string;
+  name: string;
+};
+
+interface BuildUrlProps {
+  filename: string;
+  extension: string;
+  category: string;
+  suffix?: string;
+  suffixGlue?: string;
+}

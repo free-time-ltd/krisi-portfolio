@@ -67,3 +67,24 @@ export const getBuffer = (stream: Readable) =>
     stream.once("end", () => resolve(Buffer.concat(chunks)));
     stream.once("error", reject);
   });
+
+export const buildUrl = ({
+  filename,
+  category,
+  extension,
+  suffix,
+  suffixGlue = "_",
+}: BuildUrlProps) => {
+  const url = ["uploads/"];
+
+  url.push(`${category}/`);
+  url.push(`${filename}`);
+
+  if (suffix) {
+    url.push(suffixGlue + suffix);
+  }
+
+  url.push(`.${extension}`);
+
+  return url.join("");
+};

@@ -4,13 +4,23 @@ import {
   S3Client,
   GetObjectCommand,
   GetObjectCommandOutput,
+  PutObjectCommand,
 } from "@aws-sdk/client-s3";
-// import {
-//   createUploadStatus,
-//   updateStatus,
-//   UploadState,
-// } from "@portfolio/db/models/uploadStatus.model";
-import { scaleImage, resizeImage, resizeImageAspect, getBuffer } from "./utils";
+import { prisma } from "@portfolio/db";
+import {
+  createUploadStatus,
+  UploadState,
+} from "@portfolio/db/models/uploadStatus.model";
+import { createImage, createThumb } from "@portfolio/db/models/image.model";
+import {
+  scaleImage,
+  resizeImage,
+  resizeImageAspect,
+  getBuffer,
+  getNormalSize,
+  buildUrl,
+} from "./utils";
+import sharp from "sharp";
 
 const thumbSettings: ThumbnailConfMap = {
   lq: { quality: 70, type: "scale", scale: 1 },
@@ -39,12 +49,39 @@ export const handler: Handler = async (event, context: Context) => {
 
   try {
     const response = await s3Client.send(command);
+    const { filename } = response.Metadata as FileMetadata;
+
+    // Initialize Upload State
+    try {
+      await createUploadStatus(filename, UploadState.NEW);
+    } catch (e) {
+      const errMsg = e instanceof Error ? e.message : "Uknown prisma error";
+      prisma.uploadStatus.update({
+        where: {
+          hash: filename,
+        },
+        data: {
+          status: UploadState.ERROR,
+          log: errMsg,
+        },
+      });
+    }
 
     await createImageAtS3(response);
 
+    prisma.uploadStatus.update({
+      where: {
+        hash: filename,
+      },
+      data: {
+        status: UploadState.COMPLETE,
+        updatedAt: new Date(),
+      },
+    });
+
     const awsRes = {
       statusCode: 200,
-      body: `Hello ${event.name || "World"}`,
+      message: "ok",
     };
 
     return awsRes;
@@ -61,23 +98,53 @@ export const handler: Handler = async (event, context: Context) => {
 const createImageAtS3 = async (response: GetObjectCommandOutput) => {
   const { Body } = response;
   const Buffer = await getBuffer(Body as Readable);
+  const { filename, category, extension, name, descr } =
+    response.Metadata as FileMetadata;
+  const size = getNormalSize(await sharp(Buffer).metadata());
 
+  const fileKey = buildUrl({ category, filename, extension });
+
+  const cmd = new PutObjectCommand({
+    Bucket: process.env.AWS_BUCKET,
+    Key: fileKey,
+    Body: Buffer,
+  });
+
+  await s3Client.send(cmd);
+
+  // Copy image to album
+  const parentImage = await createImage({
+    dimensions: [size.width, size.height].join("x"),
+    name,
+    filename: fileKey,
+    extension,
+    description: descr,
+    isVisible: false,
+    mature: false,
+    origin: "s3",
+    position: category,
+    sortOrder: 0,
+    views: 0,
+  });
+
+  // Generate thumbnails
   for (const key in thumbSettings) {
     if (Object.prototype.hasOwnProperty.call(thumbSettings, key)) {
       const opts = thumbSettings[key];
+      let NewImageBuffer: Buffer;
 
       if (!opts) continue;
 
       switch (opts.type) {
         case "scale":
-          await scaleImage(
+          NewImageBuffer = await scaleImage(
             Buffer,
             opts.scale as ScaleThumbnailConf["scale"],
             opts.quality
           );
           break;
         case "resize":
-          await resizeImage(
+          NewImageBuffer = await resizeImage(
             Buffer,
             Number(opts.width) as ResizeThumbnailConf["width"],
             "auto",
@@ -85,7 +152,7 @@ const createImageAtS3 = async (response: GetObjectCommandOutput) => {
           );
           break;
         case "aspect":
-          await resizeImageAspect(
+          NewImageBuffer = await resizeImageAspect(
             Buffer,
             opts.ratio as AspectThumbnailConf["ratio"],
             opts.quality
@@ -94,6 +161,14 @@ const createImageAtS3 = async (response: GetObjectCommandOutput) => {
         default:
           throw new Error(`Invalid thumbnail type of: ${opts.type}`);
       }
+
+      const size = getNormalSize(await sharp(NewImageBuffer).metadata());
+
+      await createThumb(parentImage, {
+        filename: buildUrl({ category, filename, extension, suffix: key }),
+        dimensions: [size.width, size.height].join("x"),
+        type: key,
+      });
     }
   }
 };

@@ -4,6 +4,7 @@ import {
   resizeImage,
   resizeImageAspect,
   getNormalSize,
+  buildUrl,
 } from "./utils";
 import fs from "fs";
 import path from "path";
@@ -62,5 +63,40 @@ describe("Image utilities test suite", () => {
 
     expect(width).toBe(480);
     expect(height).toBe(270);
+  });
+});
+
+describe("url utilities", () => {
+  it("builds url without suffix", () => {
+    const url = buildUrl({
+      filename: "random-test-filename",
+      category: "portfolio",
+      extension: "png",
+    });
+
+    expect(url).toBe("uploads/portfolio/random-test-filename.png");
+  });
+
+  it("builds url with suffix but with default glue", () => {
+    const url = buildUrl({
+      filename: "random-test-filename",
+      category: "portfolio",
+      extension: "png",
+      suffix: "5x_thumb",
+    });
+
+    expect(url).toBe("uploads/portfolio/random-test-filename_5x_thumb.png");
+  });
+
+  it("builds url with non-default suffix glue", () => {
+    const url = buildUrl({
+      filename: "random-test-filename",
+      category: "portfolio",
+      extension: "png",
+      suffix: "5x_thumb",
+      suffixGlue: "@",
+    });
+
+    expect(url).toBe("uploads/portfolio/random-test-filename@5x_thumb.png");
   });
 });
