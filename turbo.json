@@ -4,7 +4,7 @@
     "globalEnv": ["NODE_ENV", "DATABASE_URL"],
     "pipeline": {
       "build": {
-        "outputs": [".next/**", "build/**"]
+        "outputs": [".next/**", "build/**", "dist/**"]
       },
       "lint": {},
       "dev": {
@@ -38,6 +38,9 @@
         ]
       },
       "sls:deploy": {
+        "dependsOn": [
+          "^build"
+        ],
         "cache": false,
         "persistent": true,
         "env": [
@@ -46,8 +49,7 @@
           "AWS_SECRET",
           "AWS_SECRET_SES",
           "AWS_BUCKET",
-          "AWS_UPLOAD_BUCKET",
-          "AWS_REGION"
+          "AWS_UPLOAD_BUCKET"
         ]
       },
       "package": {

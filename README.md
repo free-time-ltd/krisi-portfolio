@@ -18,3 +18,12 @@ turbo db:push
 turbo db:seed
 turbo dev
 ```
+
+Once you are done with debugging you can build the project using the following commands
+
+```bash
+turbo build
+turbo sls:deploy
+```
+
+Congratulations. Portfolio is operational!
