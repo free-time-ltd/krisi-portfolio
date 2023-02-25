@@ -12,7 +12,7 @@ const UploadDemo = async () => {
         <Form
           categories={categories.map((category) => ({
             id: category.id,
-            name: category.name,
+            name: category.name ?? "",
             slug: category.slug,
           }))}
         />

@@ -1,7 +1,7 @@
 import { NextApiResponse, NextApiRequest } from "next";
 import { findHash } from "@portfolio/db/models/uploadStatus.model";
 
-BigInt.prototype.toJSON = function () {
+(BigInt.prototype as any).toJSON = function () {
   return this.toString();
 };
 

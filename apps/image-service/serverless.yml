@@ -1,6 +1,5 @@
 service: image-thumb-service
 frameworkVersion: '3'	
-useDotenv: true
 
 provider:
   name: aws
@@ -15,7 +14,6 @@ provider:
 
 plugins:
   - serverless-plugin-monorepo
-  - serverless-dotenv-plugin
 
 resources:
   Resources:
