@@ -4,11 +4,13 @@
     "version": "1.0.0",
     "main": "./dist/index.js",
     "source": "src/index.ts",
+    "type": "module",
     "scripts": {
         "build": "tsc",
         "test": "jest",
         "clean": "rimraf dist",
-        "sls:deploy": "npm run clean && npm run build && serverless deploy",
+        "sls:deploy": "npm run clean && npm run build && npm run with-env serverless deploy",
+        "with-env": "dotenv -e ../../.env --",
         "printenvs": "echo $AWS_BUCKET; $AWS_UPLOAD_BUCKET"
     },
     "devDependencies": {

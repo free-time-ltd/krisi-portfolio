@@ -5,6 +5,7 @@ import {
   GetObjectCommand,
   GetObjectCommandOutput,
   PutObjectCommand,
+  DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 import { prisma } from "@portfolio/db";
 import {
@@ -78,6 +79,14 @@ export const handler: Handler = async (event, context: Context) => {
         updatedAt: new Date(),
       },
     });
+
+    // Delete image
+    await s3Client.send(
+      new DeleteObjectCommand({
+        Bucket: process.env.AWS_UPLOAD_BUKET,
+        Key,
+      })
+    );
 
     const awsRes = {
       statusCode: 200,
