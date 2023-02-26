@@ -15,6 +15,10 @@ provider:
 plugins:
   - serverless-plugin-monorepo
 
+package:
+  patterns:
+    - '../../node_modules/.prisma/client/**'
+
 resources:
   Resources:
     S3Assets:
