@@ -35,30 +35,6 @@ export default async function ImageSeeder() {
       hasPinterest: Boolean(image.has_pinterest),
       createdAt: new Date(image.created_at.replace(/-/g, "/")),
       updatedAt: new Date(image.updated_at.replace(/-/g, "/")),
-      ImageCategory: {
-        create: {
-          categoryId: image.category_id,
-        },
-      },
-      ImageThumbnail: {
-        create: ImageThumbnailData.filter(
-          (thumb) => BigInt(thumb.image_id) === BigInt(id)
-        ).map(({ filepath, dimensions, type, ...thumb }) => ({
-          filename: filepath,
-          dimensions,
-          sortOrder: thumb.sort_order,
-          type,
-          createdAt: new Date(thumb.created_at.replace(/-/g, "/")),
-          updatedAt: new Date(thumb.updated_at.replace(/-/g, "/")),
-        })),
-      },
-      ImageTag: {
-        create: ImageTagData.filter(
-          (tag) => BigInt(tag.image_id) === BigInt(id)
-        ).map(({ tag }) => ({
-          tag,
-        })),
-      },
     })
   )
     .sort((a, b) => a.sortOrder - b.sortOrder)

@@ -1,5 +1,21 @@
 {
     "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "module": "CommonJS",
+        "esModuleInterop": true,
+        "target": "ES2018",
+        "lib": ["ES2018"],
+        "outDir": "./dist",
+        "rootDir": ".",
+        "strict": true,
+        "skipLibCheck": true,
+        "noEmit": false,
+        "noImplicitAny": true,
+        "sourceMap": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "moduleResolution": "node",
+    },
     "include": [
         "index.ts",
         "**/*.ts",
