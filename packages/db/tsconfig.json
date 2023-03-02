@@ -1,8 +1,12 @@
 {
     "extends": "@portfolio/tsconfig/node.json",
     "compilerOptions": {
-        "outDir": "./dist",
-        "rootDir": "src",
+        "baseUrl": ".",
+        "rootDir": ".",
+        "noEmit": true,
+        "declarationMap": false,
+        "declaration": false,
+        "composite": false
     },
     "include": [
         "index.ts",

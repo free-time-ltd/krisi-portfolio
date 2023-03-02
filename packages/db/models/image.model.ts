@@ -1,8 +1,6 @@
 import { prisma, Prisma } from "@portfolio/db";
 import type { Image, Category, ImageThumbnail } from "@portfolio/db";
 
-export type { Image } from "@portfolio/db";
-
 export interface GalleryImage {
   id: string;
   src: string;

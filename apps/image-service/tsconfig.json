@@ -1,7 +1,6 @@
 {
     "extends": "@portfolio/tsconfig/node.json",
     "compilerOptions": {
-        "baseUrl": "./src",
         "rootDir": "./src",
         "outDir": "./dist"
     },

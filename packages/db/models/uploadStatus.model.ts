@@ -1,7 +1,5 @@
 import { prisma, type UploadStatus } from "@portfolio/db";
 
-export type { UploadStatus } from "@portfolio/db";
-
 export const UploadState = {
   NEW: "new",
   COMPLETE: "complete",
