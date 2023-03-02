@@ -5,6 +5,7 @@ provider:
   name: aws
   runtime: nodejs18.x
   region: eu-west-2
+  stage: ${opt:stage,'dev'}
   environment:
     AWS_KEY: ${env:AWS_KEY}
     AWS_SECRET: ${env:AWS_SECRET}
@@ -13,11 +14,38 @@ provider:
     AWS_UPLOAD_BUCKET: ${env:AWS_UPLOAD_BUCKET}
 
 plugins:
-  - serverless-plugin-monorepo
+  - serverless-esbuild
 
+# only include the Prisma binary required on AWS Lambda while packaging
 package:
   patterns:
+    - '!node_modules/.prisma/client/libquery_engine-*'
+    - 'node_modules/.prisma/client/libquery_engine-rhel-*'
+    - '!node_modules/prisma/libquery_engine-*'
+    - '!node_modules/@prisma/engines/**'
     - '../../node_modules/.prisma/client/**'
+    - 'dist/schema.prisma'
+
+custom:
+  esbuild:
+    bundle: true
+    minify: false
+    platform: "node"
+    target: "es2020"
+    concurrency: 10
+
+layers:
+  sharp:
+    path: lambdaLayers/SharpLayer
+    name: ${self:provider.stage}-sharp
+    package: 
+      patterns:
+        - node_modules/**
+    description: sharp@0.31.3
+    compatibleRuntimes:
+      - nodejs18.x
+    licenseInfo: Apache License 2.0
+    retain: false
 
 resources:
   Resources:

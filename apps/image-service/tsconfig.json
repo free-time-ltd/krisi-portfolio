@@ -2,7 +2,10 @@
     "extends": "@portfolio/tsconfig/node.json",
     "compilerOptions": {
         "rootDir": "./src",
-        "outDir": "./dist"
+        "outDir": "./dist",
+        "composite": true,
+        "sourceMap": false,
+        "declarationMap": false
     },
     "exclude": ["node_modules", ".turbo", ".serverless", "dist"],
     "include": [
