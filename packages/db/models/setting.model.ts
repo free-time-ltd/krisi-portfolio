@@ -1,6 +1,6 @@
-import { prisma } from "..";
+import { prisma } from "@portfolio/db";
 
-export type { Setting } from "@prisma/client";
+export type { Setting } from "@portfolio/db";
 
 export const getPublicSettings = () =>
   prisma.setting.findMany({

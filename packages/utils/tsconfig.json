@@ -1,4 +1,11 @@
 {
-    "extends": "../../tsconfig.json",
-    "include": ["src/**/*.ts"]
+    "extends": "@portfolio/tsconfig/node.json",
+    "compilerOptions": {
+        "module": "CommonJS",
+        "esModuleInterop": true,
+        "target": "ES2018",
+        "lib": ["ES2018"],
+    },
+    "include": ["src/**/*.ts"],
+    "exclude": ["node_modules"]
 }

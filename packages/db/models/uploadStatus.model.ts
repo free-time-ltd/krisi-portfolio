@@ -1,6 +1,6 @@
-import { prisma, type UploadStatus } from "..";
+import { prisma, type UploadStatus } from "@portfolio/db";
 
-export type { UploadStatus } from "..";
+export type { UploadStatus } from "@portfolio/db";
 
 export const UploadState = {
   NEW: "new",

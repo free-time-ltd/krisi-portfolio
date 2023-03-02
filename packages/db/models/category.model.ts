@@ -1,7 +1,7 @@
-import { prisma } from "..";
-import type { Category } from "..";
+import { prisma } from "@portfolio/db";
+import type { Category } from "@portfolio/db";
 
-export type { Category } from "..";
+export type { Category } from "@portfolio/db";
 
 export const getCategoryAll = () => prisma.category.findMany();
 

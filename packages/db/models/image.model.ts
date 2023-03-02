@@ -1,7 +1,7 @@
-import { prisma, Prisma } from "../";
-import type { Image, Category, ImageThumbnail } from "../";
+import { prisma, Prisma } from "@portfolio/db";
+import type { Image, Category, ImageThumbnail } from "@portfolio/db";
 
-export type { Image } from "@prisma/client";
+export type { Image } from "@portfolio/db";
 
 export interface GalleryImage {
   id: string;

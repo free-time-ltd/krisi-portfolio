@@ -5,7 +5,6 @@
     "types": "./index.ts",
     "license": "MIT",
     "scripts": {
-      "build": "tsc",
       "with-env": "dotenv -e ../../.env --",
       "clean": "rimraf .turbo node_modules",
       "db:generate": "npm run with-env prisma generate",

@@ -19,7 +19,7 @@ const config = {
       'krisi-gallery.s3.eu-west-2.amazonaws.com',
     ]
   },
-  transpilePackages: ['db']
+  transpilePackages: ['@portfolio/db', '@portfolio/utils']
   /*i18n: {
     locales: ["en"],
     defaultLocale: "en",

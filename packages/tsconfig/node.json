@@ -1,0 +1,24 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "display": "NodeJS",
+    "extends": "./base.json",
+    "compilerOptions": {
+        "module": "CommonJS",
+        "esModuleInterop": true,
+        "target": "ES2021",
+        "lib": ["ES2021"],
+        "outDir": "./dist",
+        "rootDir": "src",
+        "strict": true,
+        "skipLibCheck": true,
+        "noEmit": false,
+        "noImplicitAny": true,
+        "sourceMap": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true
+    },
+    "exclude": ["node_modules"]
+  }
+  
