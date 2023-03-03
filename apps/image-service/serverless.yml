@@ -12,6 +12,7 @@ provider:
     AWS_SECRET_SES: ${env:AWS_SECRET_SES}
     AWS_BUCKET: ${env:AWS_BUCKET}
     AWS_UPLOAD_BUCKET: ${env:AWS_UPLOAD_BUCKET}
+    DATABASE_URL: ${env:DATABASE_URL} # Needed for the schema.prisma file
 
 plugins:
   - serverless-esbuild
@@ -25,6 +26,7 @@ package:
     - '!node_modules/prisma/libquery_engine-*'
     - '!node_modules/@prisma/engines/**'
     - 'dist/schema.prisma'
+    - 'dist/libquery_engine-*'
 
 custom:
   esbuild:
