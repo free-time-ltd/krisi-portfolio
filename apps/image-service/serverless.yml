@@ -13,6 +13,8 @@ provider:
     AWS_BUCKET: ${env:AWS_BUCKET}
     AWS_UPLOAD_BUCKET: ${env:AWS_UPLOAD_BUCKET}
     DATABASE_URL: ${env:DATABASE_URL} # Needed for the schema.prisma file
+    PRISMA_QUERY_ENGINE_BINARY: 'node_modules/.prisma/client/libquery_engine-rhel-openssl-1.0.x.so.node'
+    PRISMA_QUERY_ENGINE_LIBRARY: 'node_modules/.prisma/client/libquery_engine-rhel-openssl-1.0.x.so.node'
 
 plugins:
   - serverless-esbuild
@@ -22,11 +24,10 @@ plugins:
 package:
   patterns:
     - '!node_modules/.prisma/client/libquery_engine-*'
-    - 'node_modules/.prisma/client/libquery_engine-rhel-*'
     - '!node_modules/prisma/libquery_engine-*'
     - '!node_modules/@prisma/engines/**'
-    - 'dist/schema.prisma'
-    - 'dist/libquery_engine-*'
+    - 'node_modules/.prisma/client/libquery_engine-rhel-*'
+    - 'src/schema.prisma'
 
 custom:
   esbuild:
@@ -61,7 +62,7 @@ resources:
 
 functions:
   processCreatedObject:
-    handler: dist/index.handler
+    handler: src/index.handler
     events:
       - s3:
           bucket: portfolio-uploads

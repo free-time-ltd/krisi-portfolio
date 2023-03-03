@@ -4,7 +4,6 @@ After running `npm run build` and `turbo db:generate` from the monorepo root dir
 
 The following files needs to be copied
 
-- From `packages/db/prisma/schema.prisma` to `apps/image-service/dist`
-- From `node_modules/.prisma/client/libquery-engine_*` to `apps/image-service/dist`
+- From `packages/db/prisma/schema.prisma` to `apps/image-service/schema.prisma`
 
 With this done, the serverless function will run

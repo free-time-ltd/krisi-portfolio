@@ -2,10 +2,10 @@
     "private": true,
     "name": "@portfolio/image-service",
     "version": "1.0.0",
-    "main": "./src/index",
-    "types": "./src/index",
+    "main": "./src/index.ts",
+    "types": "./src/index.ts",
     "scripts": {
-        "build": "tsc",
+        "type-check": "tsc",
         "test": "jest",
         "clean": "rimraf dist",
         "package": "npm run with-env serverless package",
