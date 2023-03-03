@@ -24,6 +24,7 @@ package:
     - '!node_modules/prisma/libquery_engine-*'
     - '!node_modules/@prisma/engines/**'
     - '../../node_modules/.prisma/client/**'
+    - 'node_modules/sharp/build/Release/**'
     - 'dist/schema.prisma'
 
 custom:
@@ -33,6 +34,11 @@ custom:
     platform: "node"
     target: "es2020"
     concurrency: 10
+    external:
+      - sharp
+    packagerOptions:
+      scripts:
+        - npm install --arch=x64 --platform=linux sharp
 
 layers:
   sharp:
@@ -68,6 +74,8 @@ resources:
 functions:
   processCreatedObject:
     handler: dist/index.handler
+    layers:
+      - {Ref: SharpLambdaLayer}
     events:
       - s3:
           bucket: portfolio-uploads
