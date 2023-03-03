@@ -49,30 +49,30 @@ export const handler: Handler = async (event, context: Context) => {
     Key,
   });
 
+  const response = await s3Client.send(command);
+  const { filename } = response.Metadata as FileMetadata;
+
+  // Initialize Upload State
   try {
-    const response = await s3Client.send(command);
-    const { filename } = response.Metadata as FileMetadata;
+    await createUploadStatus(filename, UploadState.NEW);
+  } catch (e) {
+    const errMsg = e instanceof Error ? e.message : "Uknown prisma error";
+    await prisma.uploadStatus.update({
+      where: {
+        hash: filename,
+      },
+      data: {
+        status: UploadState.ERROR,
+        log: errMsg,
+      },
+    });
 
-    // Initialize Upload State
-    try {
-      await createUploadStatus(filename, UploadState.NEW);
-    } catch (e) {
-      const errMsg = e instanceof Error ? e.message : "Uknown prisma error";
-      await prisma.uploadStatus.update({
-        where: {
-          hash: filename,
-        },
-        data: {
-          status: UploadState.ERROR,
-          log: errMsg,
-        },
-      });
+    console.error(errMsg);
 
-      console.error(errMsg);
+    exit(1);
+  }
 
-      exit(1);
-    }
-
+  try {
     const thumbs = await createImageAtS3(response);
 
     await prisma.uploadStatus.update({
@@ -85,7 +85,7 @@ export const handler: Handler = async (event, context: Context) => {
       },
     });
 
-    // Delete image
+    // Delete source image
     await s3Client.send(
       new DeleteObjectCommand({
         Bucket: process.env.AWS_UPLOAD_BUCKET,
@@ -102,6 +102,19 @@ export const handler: Handler = async (event, context: Context) => {
 
     return awsRes;
   } catch (e) {
+    const errMsg = (e as Error).message;
+
+    await prisma.uploadStatus.update({
+      where: {
+        hash: filename,
+      },
+      data: {
+        status: UploadState.ERROR,
+        updatedAt: new Date(),
+        log: errMsg ?? "Unknown error",
+      },
+    });
+
     throw e;
   }
 };
@@ -138,6 +151,7 @@ const createImageAtS3 = async (response: GetObjectCommandOutput) => {
     views: 0,
   });
 
+  const promises = [];
   const thumbs: string[] = [];
 
   // Generate thumbnails
@@ -176,17 +190,29 @@ const createImageAtS3 = async (response: GetObjectCommandOutput) => {
         suffix: key,
       });
 
-      await createThumb(parentImage, {
-        filename: thumbName,
-        dimensions: [size.width, size.height].join("x"),
-        type: key,
-      });
+      promises.push(
+        s3Client.send(
+          new PutObjectCommand({
+            Bucket: process.env.AWS_BUCKET,
+            Key: thumbName,
+            Body: NewImageBuffer,
+          })
+        )
+      );
 
-      // @todo Create image at the actual bucket for fucks sake
+      promises.push(
+        createThumb(parentImage, {
+          filename: thumbName,
+          dimensions: [size.width, size.height].join("x"),
+          type: key,
+        })
+      );
 
       thumbs.push(thumbName);
     }
   }
+
+  await Promise.all(promises);
 
   return thumbs;
 };

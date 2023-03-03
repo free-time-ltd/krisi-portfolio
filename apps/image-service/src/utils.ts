@@ -75,7 +75,7 @@ export const buildUrl = ({
   suffix,
   suffixGlue = "_",
 }: BuildUrlProps) => {
-  const url = ["uploads-tmp/"];
+  const url = ["uploads/"];
 
   url.push(`${category}/`);
   url.push(`${filename}`);
