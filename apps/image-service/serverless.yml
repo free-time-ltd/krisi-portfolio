@@ -63,6 +63,7 @@ resources:
 functions:
   processCreatedObject:
     handler: src/index.handler
+    timeout: 30
     events:
       - s3:
           bucket: portfolio-uploads

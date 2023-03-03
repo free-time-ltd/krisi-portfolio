@@ -22,6 +22,7 @@ import {
   buildUrl,
 } from "./utils";
 import sharp from "sharp";
+import { exit } from "process";
 
 const thumbSettings: ThumbnailConfMap = {
   lq: { quality: 70, type: "scale", scale: 1 },
@@ -57,7 +58,7 @@ export const handler: Handler = async (event, context: Context) => {
       await createUploadStatus(filename, UploadState.NEW);
     } catch (e) {
       const errMsg = e instanceof Error ? e.message : "Uknown prisma error";
-      prisma.uploadStatus.update({
+      await prisma.uploadStatus.update({
         where: {
           hash: filename,
         },
@@ -66,11 +67,15 @@ export const handler: Handler = async (event, context: Context) => {
           log: errMsg,
         },
       });
+
+      console.error(errMsg);
+
+      exit(1);
     }
 
-    await createImageAtS3(response);
+    const thumbs = await createImageAtS3(response);
 
-    prisma.uploadStatus.update({
+    await prisma.uploadStatus.update({
       where: {
         hash: filename,
       },
@@ -83,21 +88,21 @@ export const handler: Handler = async (event, context: Context) => {
     // Delete image
     await s3Client.send(
       new DeleteObjectCommand({
-        Bucket: process.env.AWS_UPLOAD_BUKET,
+        Bucket: process.env.AWS_UPLOAD_BUCKET,
         Key,
       })
     );
 
     const awsRes = {
       statusCode: 200,
+      filename,
+      thumbs,
       message: "ok",
     };
 
     return awsRes;
   } catch (e) {
-    const error = e instanceof Error ? e.message : "File probably not found";
-
-    throw new Error(error);
+    throw e;
   }
 };
 
@@ -133,6 +138,8 @@ const createImageAtS3 = async (response: GetObjectCommandOutput) => {
     views: 0,
   });
 
+  const thumbs: string[] = [];
+
   // Generate thumbnails
   for (const key in thumbSettings) {
     if (Object.prototype.hasOwnProperty.call(thumbSettings, key)) {
@@ -162,11 +169,24 @@ const createImageAtS3 = async (response: GetObjectCommandOutput) => {
 
       const size = getNormalSize(await sharp(NewImageBuffer).metadata());
 
+      const thumbName = buildUrl({
+        category,
+        filename,
+        extension,
+        suffix: key,
+      });
+
       await createThumb(parentImage, {
-        filename: buildUrl({ category, filename, extension, suffix: key }),
+        filename: thumbName,
         dimensions: [size.width, size.height].join("x"),
         type: key,
       });
+
+      // @todo Create image at the actual bucket for fucks sake
+
+      thumbs.push(thumbName);
     }
   }
+
+  return thumbs;
 };
