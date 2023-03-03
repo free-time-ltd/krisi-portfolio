@@ -97,10 +97,7 @@ export const handler: Handler = async (event, context: Context) => {
   } catch (e) {
     const error = e instanceof Error ? e.message : "File probably not found";
 
-    return {
-      statusCode: 403,
-      error,
-    };
+    throw new Error(error);
   }
 };
 
