@@ -2,9 +2,7 @@ import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import { authOptions } from "~/server/auth";
 
-import "../../styles/admin.css";
-
-// @todo how do I overwrite the global layout/template with this one?
+import "~/styles/admin.css";
 
 export default async function AdminPanelLayout({
   children,

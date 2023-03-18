@@ -1,4 +1,4 @@
-import FontsVariable from "./Fonts";
+import FontsVariable from "~/app/Fonts";
 
 export default async function RootLayout({
   children,

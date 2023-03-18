@@ -1,5 +1,5 @@
-import localFont from "@next/font/local";
-import { Roboto, Roboto_Mono } from "@next/font/google";
+import localFont from "next/font/local";
+import { Roboto, Roboto_Mono } from "next/font/google";
 
 export const c2ymRegular = localFont({
   src: "./fonts/C2ym-Regular.woff2",
