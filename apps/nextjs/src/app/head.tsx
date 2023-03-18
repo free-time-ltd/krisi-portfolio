@@ -1,5 +1,5 @@
 import getSettings from "~/utils/settings";
-import DefaultTags from "./DefaultTags";
+import DefaultTags from "~/app/DefaultTags";
 
 const Head = async () => {
   const settings = await getSettings();

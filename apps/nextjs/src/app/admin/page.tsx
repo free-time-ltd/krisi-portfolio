@@ -1,12 +1,15 @@
-import Head from "next/head";
+import { SignIn, SignOut } from "~/components/Auth";
 
 const DashboardPage = async () => {
   return (
     <>
-      <Head>
-        <title>Krisi Portfolio Admin Page</title>
-      </Head>
       <h1>Dashboard in the Admin Panel</h1>
+      <div className="my-16">
+        <SignIn />
+      </div>
+      <div className="my-16">
+        <SignOut />
+      </div>
     </>
   );
 };
