@@ -2,6 +2,8 @@ import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import { authOptions } from "~/server/auth";
 import FontsVariable from "~/app/Fonts";
+import Navbar from "./Navbar";
+import Sidebar from "./Sidebar";
 
 import "~/styles/admin.css";
 
@@ -19,7 +21,15 @@ export default async function AdminPanelLayout({
   return (
     <html lang="en" className={FontsVariable}>
       <body>
-        <main className="admin-panel">{children}</main>
+        <main className="admin-panel">
+          {/* @ts-expect-error Server Component */}
+          <Navbar />
+          <Sidebar />
+          <article className="content">{children}</article>
+          <section className="footer text-center">
+            Copyrighted &copy; {new Date().getFullYear()}
+          </section>
+        </main>
       </body>
     </html>
   );

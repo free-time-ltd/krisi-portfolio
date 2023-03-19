@@ -4,12 +4,85 @@
 
 html, body {
     height: 100%;
+    -webkit-font-smoothing: antialiased;
 }
 
 html {
     font-size: 100%;
 }
 
-.font-c2ym {
-    font-family: var(--font-c2ym);
+.admin-panel {
+    display: grid;
+    grid-template-columns: theme('spacing.60') 1fr; /* 240px for the sidebar, 1fr for the content area */
+    grid-template-rows: auto 1fr auto; /* auto for the navbar and footer, 1fr for the content area */
+    grid-template-areas: 
+    "navbar navbar"
+    "sidebar content"
+    "footer footer";
+    height: 100vh;
+}
+
+.navbar {
+    grid-area: navbar;
+}
+
+.sidebar {
+    grid-area: sidebar;
+}
+
+.content {
+    grid-area: content;
+}
+
+.footer {
+    grid-area: footer;
+}
+
+/* define styles for the navbar */
+.navbar {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+}
+
+/* define styles for the sidebar */
+.sidebar {
+    background-color: #f1f1f1;
+}
+
+/* define styles for the content area */
+.content {
+    padding: 10px;
+}
+
+/* define styles for the footer */
+.footer {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+}
+
+/* media query to make the layout responsive */
+@media (max-width: 768px) {
+    .admin-panel {
+        grid-template-columns: 1fr; /* change to a single column layout */
+        grid-template-rows: auto 1fr auto; /* keep the same row layout */
+        grid-template-areas:
+        "navbar"
+        "content"
+        "footer";
+    }
+    .sidebar {
+        display: none; /* hide the sidebar */
+    }
+}
+
+/* styles for toggling the sidebar */
+.sidebar-closed .sidebar {
+    display: none;
+}
+
+/* styles for expanding the content area when the sidebar is closed */
+.sidebar-closed .content {
+    grid-column: 1 / -1;
 }

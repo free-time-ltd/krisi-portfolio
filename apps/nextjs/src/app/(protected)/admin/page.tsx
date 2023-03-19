@@ -3,13 +3,7 @@ import { SignIn, SignOut } from "~/components/Auth";
 const DashboardPage = async () => {
   return (
     <>
-      <h1>Dashboard in the Admin Panel</h1>
-      <div className="my-16">
-        <SignIn />
-      </div>
-      <div className="my-16">
-        <SignOut />
-      </div>
+      <h1 className="text-3xl">Welcome to the Dashboard</h1>
     </>
   );
 };

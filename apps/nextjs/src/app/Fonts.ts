@@ -8,15 +8,15 @@ export const c2ymRegular = localFont({
 });
 
 export const RobotoFont = Roboto({
-  subsets: ["latin"],
-  display: "optional",
+  subsets: ["latin", "cyrillic"],
+  display: "swap",
   variable: "--font-roboto",
   weight: ["300", "400", "500", "700"],
 });
 
 export const RobotoMono = Roboto_Mono({
   display: "swap",
-  subsets: ["latin"],
+  subsets: ["latin", "cyrillic"],
   variable: "--font-roboto-mono",
 });
 
