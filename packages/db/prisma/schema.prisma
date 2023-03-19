@@ -52,6 +52,7 @@ model User {
     email         String?    @unique
     emailVerified DateTime?
     image         String?
+    role          UserRole   @default(User)
     accounts      Account[]
     sessions      Session[]
     Image         Image[]
@@ -165,4 +166,9 @@ model UploadStatus {
     log       String?
     createdAt DateTime @default(now())
     updatedAt DateTime @default(now())
+}
+
+enum UserRole {
+    User
+    Administrator
 }
