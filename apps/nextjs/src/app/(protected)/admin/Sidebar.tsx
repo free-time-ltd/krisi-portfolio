@@ -52,7 +52,7 @@ const Sidebar = () => {
       <div className="h-full overflow-y-auto bg-gray-50 px-3 py-4 dark:bg-gray-800">
         <ul className="flex h-full flex-col">
           {sidebarLinks.map((link) => (
-            <li>
+            <li key={link.id}>
               <Link
                 key={link.id}
                 href={link.href}
