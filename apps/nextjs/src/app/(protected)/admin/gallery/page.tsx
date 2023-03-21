@@ -2,7 +2,6 @@ import { getCategoryAllWithImages } from "@portfolio/db/models/category.model";
 import Link from "next/link";
 import CardWithImage from "~/components/Admin/CardWithImage";
 import { awsBucketUrl, Image, ImageThumbnail } from "@portfolio/db";
-import { pluck } from "~/utils/array";
 
 const GalleryPage = async () => {
   const categories = await getCategoryAllWithImages();
