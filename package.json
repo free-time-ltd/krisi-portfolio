@@ -12,7 +12,8 @@
     "lint": "turbo run lint",
     "package": "turbo run package",
     "deploy": "turbo run sls:deploy",
-    "db-seed": "NODE_ENV=development prisma db seed"
+    "db-seed": "NODE_ENV=development prisma db seed",
+    "db-generate": "turbo run db:generate"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.5",

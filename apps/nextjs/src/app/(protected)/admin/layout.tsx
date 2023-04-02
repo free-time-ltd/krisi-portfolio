@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth/next";
-import { redirect } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import { authOptions } from "~/server/auth";
 import FontsVariable from "~/app/Fonts";
 import Navbar from "./Navbar";

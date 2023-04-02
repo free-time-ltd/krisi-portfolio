@@ -1,5 +1,5 @@
 import localFont from "next/font/local";
-import { Roboto, Roboto_Mono } from "next/font/google";
+import { Roboto_Mono, Roboto_Condensed } from "next/font/google";
 
 export const c2ymRegular = localFont({
   src: "./fonts/C2ym-Regular.woff2",
@@ -7,11 +7,11 @@ export const c2ymRegular = localFont({
   variable: "--font-c2ym",
 });
 
-export const RobotoFont = Roboto({
+export const RobotoFont = Roboto_Condensed({
   subsets: ["latin", "cyrillic"],
   display: "swap",
   variable: "--font-roboto",
-  weight: ["300", "400", "500", "700"],
+  weight: ["300", "400", "700"],
 });
 
 export const RobotoMono = Roboto_Mono({

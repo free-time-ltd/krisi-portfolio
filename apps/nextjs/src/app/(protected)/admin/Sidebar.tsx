@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { BaseSignOut } from "~/components/Auth";
 import Dashboard from "~/components/Admin/Icons/Dashboard";
 import Gallery from "~/components/Admin/Icons/Gallery";
@@ -6,8 +5,10 @@ import Testimonials from "~/components/Admin/Icons/Testimonials";
 import Commissions from "~/components/Admin/Icons/Commissions";
 import Settings from "~/components/Admin/Icons/Settings";
 import GoBack from "~/components/Admin/Icons/GoBack";
+import SidebarLink from "~/components/SidebarLink";
+import { SidebarLinkEntry } from "~/types";
 
-const sidebarLinks = [
+export const SidebarLinks: SidebarLinkEntry[] = [
   {
     id: "dashboard",
     href: "/admin",
@@ -51,18 +52,9 @@ const Sidebar = () => {
     <aside className="sidebar -translate-x-full transition-transform sm:translate-x-0">
       <div className="h-full overflow-y-auto bg-gray-50 px-3 py-4 dark:bg-gray-800">
         <ul className="flex h-full flex-col">
-          {sidebarLinks.map((link) => (
+          {SidebarLinks.map((link) => (
             <li key={link.id}>
-              <Link
-                key={link.id}
-                href={link.href}
-                className="flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-              >
-                {!!link.icon && (
-                  <link.icon className="h-6 w-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" />
-                )}
-                <span className="ml-3">{link.label}</span>
-              </Link>
+              <SidebarLink link={link} />
             </li>
           ))}
           <li className="mt-auto w-full self-end justify-self-end">
