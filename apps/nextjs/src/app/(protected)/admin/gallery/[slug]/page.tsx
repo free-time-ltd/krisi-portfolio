@@ -1,17 +1,28 @@
 import { getCategoryBySlug, getImagesByCategorySlug } from "@portfolio/db";
 import { notFound } from "next/navigation";
-import { PrismaImage } from "~/types";
+import { ImageEntry, PrismaImage } from "~/types";
 import ImageSorter from "~/components/Admin/ImageSorter";
 
-const serializeImages = (images: PrismaImage[]) =>
-  images.map((image) => ({
-    ...image,
-    id: image.id.toString(),
-    ImageThumbnail: image.ImageThumbnail.map((thumb) => ({
-      ...thumb,
-      imageId: thumb.imageId.toString(),
-    })),
-  }));
+const serializeImages = (images: PrismaImage[]): ImageEntry[] =>
+  images.map(
+    ({ id, name, filename, dimensions, sortOrder, ImageThumbnail }) => ({
+      id: id.toString(),
+      name,
+      filename,
+      dimensions,
+      sortOrder,
+      ImageThumbnail: ImageThumbnail.map(
+        ({ id, imageId, filename, dimensions, sortOrder, type }) => ({
+          id: id.toString(),
+          imageId: imageId.toString(),
+          filename,
+          dimensions,
+          sortOrder,
+          type,
+        })
+      ),
+    })
+  );
 
 const GallerySlug = async ({ params }: { params: { slug: string } }) => {
   const category = await getCategoryBySlug(params.slug);
@@ -29,7 +40,10 @@ const GallerySlug = async ({ params }: { params: { slug: string } }) => {
         {images.length && <>({images.length})</>}
       </h1>
       <div className="my-4">
-        <ImageSorter category={category} images={serializeImages(images)} />
+        <ImageSorter
+          category={{ id: category.id.toString(), name: category.name }}
+          images={serializeImages(images)}
+        />
       </div>
     </section>
   );

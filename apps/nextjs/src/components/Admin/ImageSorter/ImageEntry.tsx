@@ -1,10 +1,10 @@
 "use client";
 import { FC } from "react";
 import Image from "next/image";
-import { PrismaImage } from "~/types";
+import { ImageEntry as ImageEntryType } from "~/types";
 
 interface Props {
-  image: PrismaImage;
+  image: ImageEntryType;
 }
 
 const awsBucketUrl =
@@ -12,7 +12,7 @@ const awsBucketUrl =
 
 const ThumbSizes = ["site_thumb", "450_thumb", "720p_thumb"] as const;
 
-const smallestThumb = (image: PrismaImage) => {
+const smallestThumb = (image: ImageEntryType) => {
   for (let i = 0; i < ThumbSizes.length; i++) {
     const size = ThumbSizes[i];
 
@@ -36,6 +36,7 @@ const ImageEntry: FC<Props> = ({ image }) => {
           alt={image.name ?? ""}
           width={Number(dimensions.split("x")[0]) ?? 270}
           height={Number(dimensions.split("x")[1]) ?? 150}
+          className="mx-auto"
         />
       </div>
       <span className="text-sm">
