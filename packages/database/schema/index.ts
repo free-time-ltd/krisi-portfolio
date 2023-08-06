@@ -13,8 +13,8 @@ import {
   json,
   decimal,
 } from "drizzle-orm/mysql-core";
-import { sql } from "drizzle-orm";
-import unsignedDouble from "types/unsignedDouble";
+import { InferModel, relations, sql } from "drizzle-orm";
+import unsignedDouble from "@portfolio/database/types/unsignedDouble";
 
 export const account = mysqlTable(
   "Account",
@@ -65,6 +65,8 @@ export const category = mysqlTable(
   }
 );
 
+export type CategoryModel = InferModel<typeof category>;
+
 export const image = mysqlTable(
   "Image",
   {
@@ -97,12 +99,18 @@ export const image = mysqlTable(
   }
 );
 
+export type ImageModel = InferModel<typeof image>;
+
 export const imageCategory = mysqlTable(
   "ImageCategory",
   {
     id: varchar("id", { length: 191 }).notNull(),
-    imageId: bigint("imageId", { mode: "number" }).notNull(),
-    categoryId: int("categoryId").notNull(),
+    imageId: bigint("imageId", { mode: "number" })
+      .notNull()
+      .references(() => image.id),
+    categoryId: int("categoryId")
+      .notNull()
+      .references(() => category.id),
     createdAt: datetime("createdAt", { mode: "string", fsp: 3 })
       .default(sql`CURRENT_TIMESTAMP(3)`)
       .notNull(),
@@ -146,7 +154,9 @@ export const imageThumbnail = mysqlTable(
   "ImageThumbnail",
   {
     id: varchar("id", { length: 191 }).notNull(),
-    imageId: bigint("imageId", { mode: "number" }).notNull(),
+    imageId: bigint("imageId", { mode: "number" })
+      .notNull()
+      .references(() => image.id),
     filename: varchar("filename", { length: 191 }).notNull(),
     dimensions: varchar("dimensions", { length: 191 }).notNull(),
     sortOrder: int("sortOrder").default(0).notNull(),
@@ -165,6 +175,44 @@ export const imageThumbnail = mysqlTable(
     };
   }
 );
+
+export type ImageThumbnailModel = InferModel<typeof imageThumbnail>;
+
+export const imageRelations = relations(image, ({ many }) => ({
+  tags: many(imageTag),
+  categories: many(imageCategory),
+  thumbnails: many(imageThumbnail),
+  imageCategories: many(imageCategory),
+}));
+
+export const categoryRelations = relations(category, ({ many }) => ({
+  images: many(imageCategory),
+}));
+
+export const tagsRelations = relations(imageTag, ({ one }) => ({
+  image: one(image, {
+    fields: [imageTag.imageId],
+    references: [image.id],
+  }),
+}));
+
+export const thumbnailRelations = relations(imageThumbnail, ({ one }) => ({
+  image: one(image, {
+    fields: [imageThumbnail.imageId],
+    references: [image.id],
+  }),
+}));
+
+export const imageCategoryRelations = relations(imageCategory, ({ one }) => ({
+  image: one(image, {
+    fields: [imageCategory.imageId],
+    references: [image.id],
+  }),
+  category: one(category, {
+    fields: [imageCategory.categoryId],
+    references: [category.id],
+  }),
+}));
 
 export const session = mysqlTable(
   "Session",

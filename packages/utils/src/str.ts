@@ -5,3 +5,6 @@ export const generateFilename = () => {
 
   return str.split("-").join("");
 };
+
+export const pluck = <T, K extends keyof T>(arr: T[], prop: K): T[K][] =>
+  arr.map((item) => item[prop]);

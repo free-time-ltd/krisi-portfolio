@@ -1,29 +1,51 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { prisma } from "@portfolio/db";
-import { mapImageToDto } from "@portfolio/db/models/image.model";
+import {
+  db,
+  ImageModel,
+  CategoryModel,
+  ImageThumbnailModel,
+} from "@portfolio/database";
+import { findBySlug } from "@portfolio/database/helpers/imageHelper";
 
 interface Props {
   params: { slug: string };
 }
 
-const fetchImages = (slug: string) =>
-  prisma.image.findMany({
-    where: {
-      ImageCategory: {
-        some: {
-          Category: { slug },
-        },
-      },
-    },
-    include: {
-      ImageThumbnail: true,
-    },
-    orderBy: { sortOrder: "asc" },
-  });
+type ThumbnailSize =
+  | "lq"
+  | "2x_thumb"
+  | "5x_thumb"
+  | "16_9_thumb"
+  | "450_thumb"
+  | "site_thumb"
+  | "720p_thumb";
+
+export const awsBucketUrl =
+  `https://${process.env.AWS_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com` as const;
+
+export const mapImageToDto = (
+  model: ImageModel & { thumbnails: ImageThumbnailModel[] },
+  size: ThumbnailSize = "16_9_thumb",
+) => {
+  const thumb = model.thumbnails.find((thumb) => thumb.type === size);
+
+  const filename = thumb?.filename ?? model.filename ?? "";
+
+  const [width, height] = model.dimensions.split("x") || [];
+
+  return {
+    id: model.id.toString(),
+    src: `${awsBucketUrl}/${filename.toString()}`,
+    width: Number(width ?? 0),
+    height: Number(height ?? 0),
+    name: model.name ?? Math.random().toString(),
+    description: model.description ?? undefined,
+  };
+};
 
 const GalleryPage = async ({ params: { slug } }: Props) => {
-  const images = await fetchImages(slug);
+  const images = await findBySlug(slug);
   const imageDTOs = images.map((image) => mapImageToDto(image, "site_thumb"));
 
   if (images.length === 0) {
@@ -58,7 +80,7 @@ const GalleryPage = async ({ params: { slug } }: Props) => {
 export default GalleryPage;
 
 export async function generateStaticParams() {
-  const categories = await prisma.category.findMany();
+  const categories: CategoryModel[] = await db.query.category.findMany();
 
   return categories.map((category) => ({ slug: category.slug }));
 }
