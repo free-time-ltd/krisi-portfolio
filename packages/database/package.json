@@ -1,0 +1,21 @@
+{
+    "name": "@portfolio/database",
+    "private": true,
+    "version": "0.1.0",
+    "main": "./index.ts",
+    "types": "./index.ts",
+    "scripts": {
+        "with-env": "dotenv -e ../../.env --",
+        "clean": "rimraf .turbo node_modules",
+        "dev": "npm run with-env drizzle-kit studio -- --port 8080 --verbose",
+        "db:pull": "npm run with-env drizzle-kit introspect:mysql",
+        "db:generate": "npm run with-env drizzle-kit generate:mysql -- --schema=schema/index.ts --out=migrations/"
+    },
+    "dependencies": {
+        "@planetscale/database": "^1.10.0",
+        "drizzle-orm": "^0.27.2"
+    },
+    "devDependencies": {
+        "drizzle-kit": "^0.19.12"
+    }
+}

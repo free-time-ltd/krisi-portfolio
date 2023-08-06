@@ -1,0 +1,17 @@
+{
+    "extends": "@portfolio/tsconfig/node.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "rootDir": ".",
+        "noEmit": true,
+        "declarationMap": false,
+        "declaration": false,
+        "composite": false
+    },
+    "include": [
+        "index.ts",
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.d.ts",
+    ],
+}

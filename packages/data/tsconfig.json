@@ -1,4 +1,4 @@
 {
-    "extends": "../../tsconfig.json",
+    "extends": "@portfolio/tsconfig/node",
     "include": ["index.ts"]
   }
